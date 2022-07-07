@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: whoami 
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: whoami 
+    spec:
+      containers:
+      - name: whoami-container 
+        image: containous/whoami
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80 
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: tcp-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    role: whoami
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 4443

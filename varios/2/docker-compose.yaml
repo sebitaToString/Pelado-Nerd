@@ -20,6 +20,10 @@ services:
       - "traefik.port=8080" # default port to access the dashboard for traefik
     container_name: traefik
     restart: always
+  whoami:
+    image: containous/whoami
+    labels:
+      - "traefik.frontend.rule=host:whoami.fredrikson.com.ar"
 
 networks:
   proxy: # new docker network to work

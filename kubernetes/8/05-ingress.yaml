@@ -2,14 +2,21 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  annotations: 
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" 
+ 
+ 
 spec:
+  tls:
+  - hosts:
+    - sebita.bikotoru.cl 
+    secretName: echo-tls
   rules:
-  - host: v1.peladonerd.local
+  - host: sebita.bikotoru.cl
     http:
       paths:
-      - path: /
+      - path: /v1
         pathType: Exact
         backend:
           service:
@@ -17,10 +24,10 @@ spec:
             port:
               number: 80
         
-  - host: v2.peladonerd.local 
+  - host: sebita.bikotoru.cl
     http:
       paths:
-      - path: /
+      - path: /v2
         pathType: Exact
         backend:
           service:

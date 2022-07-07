@@ -1,0 +1,58 @@
+# Desplegar Contenedor
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sebitaprueba
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sebitaprueba
+  template:
+    metadata:
+      labels:
+        app: sebitaprueba
+    spec:
+      containers:
+      - name: sebitaprueba
+        image: nginx:stable-alpine
+        imagePullPolicy: IfNotPresent   
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "400m"
+          limits:
+            memory: "1024Mi"
+            cpu: "1000m"
+---
+# Crear servicio
+apiVersion: v1
+kind: Service
+metadata:
+  name: sebitaprueba
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: sebitaprueba
+
+--- 
+# Crear regla Ingress
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: sebitapruebarules
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    
+spec:
+  rules:
+  - host:  sebita.bikotoru.cl
+    http:
+      paths:
+      - backend:
+          serviceName: sebitaprueba
+          servicePort: 80
